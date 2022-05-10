@@ -1,4 +1,4 @@
-const path = require("path");
+/* const path = require("path");
 
 if (process.env.USER) require("dotenv").config();
 
@@ -6,6 +6,26 @@ const {
   DATABASE_URL = "postgres://nmesxbjs:SMjfCWPgVUq8Slq3sODAdn7_-woJy-0Y@lallah.db.elephantsql.com/nmesxbjs" ||
     "postgresql://postgres@localhost/postgres",
 } = process.env;
+*/
+
+const path = require("path");
+
+require("dotenv").config();
+
+// create variables to hold URLs for both databases listed in .env
+// create variable to hold the NODE_ENV status.
+const {
+  NODE_ENV = "development",
+  DEVELOPMENT_DATABASE_URL,
+  PRODUCTION_DATABASE_URL,
+} = process.env;
+
+// create variable to hold URL depending on his migration is run
+// with NODE_ENV as development or as production.
+const DATABASE_URL =
+  NODE_ENV === "production"
+    ? PRODUCTION_DATABASE_URL
+    : DEVELOPMENT_DATABASE_URL;
 
 module.exports = {
   development: {
