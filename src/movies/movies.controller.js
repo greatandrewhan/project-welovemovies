@@ -1,7 +1,7 @@
 const service = require("./movies.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 
-// movie exists in the request
+// movie exists in the request and is valid
 async function movieExists(req, res, next) {
   const { movieId } = req.params;
   const foundMovie = await service.read(movieId);

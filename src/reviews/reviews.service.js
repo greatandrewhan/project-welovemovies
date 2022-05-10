@@ -29,7 +29,7 @@ function update(updatedReview) {
     });
 }
 
-// delete a review
+// delete a review by id
 function destroy(reviewId) {
   return knex("reviews").where({ review_id: reviewId }).del();
 }
