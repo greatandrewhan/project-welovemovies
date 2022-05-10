@@ -6,46 +6,51 @@ const addCritic = mapProperties({
   preferred_name: "critic.preferred_name",
   surname: "critic.surname",
   organization_name: "critic.organization_name",
-  created_at: "critic.created_at",
-  updated_at: "critic.updated_at",
 });
-
-function read(movieId) {
-  return knex("movies").select("*").where({ movie_id: movieId }).first();
-}
-
-function readTheaters(movieId) {
-  return knex("movies as m")
-    .join("movies_theaters as mt", "m.movie_id", "mt.movie_id")
-    .join("theaters as t", "mt.theater_id", "t.theater_id")
-    .select("t.*", "mt.is_showing", "mt.movie_id")
-    .where({ "mt.movie_id": movieId });
-}
-
-function readReviews(movieId) {
-  return knex("reviews as r")
-    .join("critics as c", "r.critic_id", "c.critic_id")
-    .select("r.*", "c.*")
-    .where({ "r.movie_id": movieId })
-    .then((data) => data.map((d) => addCritic(d)));
-}
 
 function list() {
   return knex("movies").select("*");
 }
 
-function listShowing() {
+function inTheatersNow() {
   return knex("movies as m")
-    .join("movies_theaters as mt", "mt.movie_id", "m.movie_id")
+    .join("movies_theaters as mt", "m.movie_id", "mt.movie_id")
     .select("m.*")
     .where({ "mt.is_showing": true })
-    .groupBy("mt.movie_id");
+    .groupBy("m.movie_id");
+}
+
+function read(movieId) {
+  return knex("movies").select("*").where({ movie_id: movieId }).first();
+}
+
+function theaterPlayingMovie(movieId) {
+  return knex("movies_theaters as mt")
+    .join("theaters as t", "mt.theater_id", "t.theater_id")
+    .select("*")
+    .where({ movie_id: movieId, is_showing: true });
+}
+
+function listReviews(movieId) {
+  return knex("movies as m")
+    .join("reviews as r", "m.movie_id", "r.movie_id")
+    .join("critics as c", "r.critic_id", "c.critic_id")
+    .select("*")
+    .where({ "r.movie_id": movieId })
+    .then((reviews) => {
+      const includeCriticDetails = [];
+      reviews.forEach((review) => {
+        const critic = addCritic(review);
+        includeCriticDetails.push(critic);
+      });
+      return includeCriticDetails;
+    });
 }
 
 module.exports = {
   list,
-  listShowing,
+  inTheatersNow,
   read,
-  readTheaters,
-  readReviews,
+  theaterPlayingMovie,
+  listReviews,
 };
