@@ -1,6 +1,7 @@
 const knex = require("../db/connection");
 const reduceProperties = require("../utils/reduce-properties");
 
+// reduce movies to only the theater name and movie name
 const reduceMovies = reduceProperties("theater_id", {
   movie_id: ["movies", null, "movie_id"],
   title: ["movies", null, "title"],
@@ -14,6 +15,7 @@ const reduceMovies = reduceProperties("theater_id", {
   theater_id: ["movies", null, "theater_id"],
 });
 
+// list all movies by reducing the movies to only the theater name and movie name
 function list() {
   return knex("theaters as t")
     .join("movies_theaters as mt", "t.theater_id", "mt.theater_id")

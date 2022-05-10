@@ -1,16 +1,19 @@
 const knex = require("../db/connection");
 const mapProperties = require("../utils/map-properties");
 
+// mapProperties critic details to the review
 const addCritic = mapProperties({
   preferred_name: "critic.preferred_name",
   surname: "critic.surname",
   organization_name: "critic.organization_name",
 });
 
+// get all reviews for a movie
 function read(reviewId) {
   return knex("reviews").select("*").where({ review_id: reviewId }).first();
 }
 
+// update a review
 function update(updatedReview) {
   return knex("reviews")
     .select("*")
@@ -26,6 +29,7 @@ function update(updatedReview) {
     });
 }
 
+// delete a review
 function destroy(reviewId) {
   return knex("reviews").where({ review_id: reviewId }).del();
 }
